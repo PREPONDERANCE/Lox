@@ -1,8 +1,5 @@
 package com.craftinginterpreters.lox;
 
-import static com.craftinginterpreters.lox.TokenType.IDENTIFIER;
-import static com.craftinginterpreters.lox.TokenType.THIS;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
