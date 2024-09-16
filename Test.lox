@@ -1,2 +1,10 @@
-"This is a test for multi-line 
- string"
+var i = 1;
+
+/*
+This is a block comment without nested blocks
+*/
+
+/*
+* This is a block comment 
+* /* with /* two */ nested blocks */
+*/

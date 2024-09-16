@@ -122,6 +122,48 @@ public class Scanner {
         addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
     }
 
+    private void comment(int type) {
+        // type: 0 for // 1 for /*
+
+        if (type == 0) {
+            while (!isAtEnd() && peek() != '\n')
+                advance();
+        }
+
+        // Consider nested /* */
+        if (type == 1) {
+            int depth = 1;
+
+            while (depth != 0) {
+                while (peek() != '*' && !isAtEnd()) {
+                    if (peek() == '\n')
+                        line++;
+                    else if (peek() == '/') {
+                        advance();
+                        if (match('*'))
+                            depth++;
+                        else
+                            continue;
+                    }
+
+                    advance();
+                }
+
+                if (isAtEnd()) {
+                    Lox.error(line, "Unterminated block comments");
+                }
+
+                if (peek() == '*') {
+                    advance();
+                    if (match('/'))
+                        depth--;
+                    else
+                        continue;
+                }
+            }
+        }
+    }
+
     private void identifier() {
         while (isAlphaNumeric(peek()))
             advance();
@@ -190,9 +232,9 @@ public class Scanner {
             // Special case: slash
             case '/':
                 if (match('/'))
-                    while (!isAtEnd() && peek() != '\n') {
-                        advance();
-                    }
+                    comment(0);
+                else if (match('*'))
+                    comment(1);
                 else
                     addToken(TokenType.SLASH);
                 break;
