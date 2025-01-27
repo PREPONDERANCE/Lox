@@ -14,7 +14,10 @@ public class Token {
     }
 
     public String toString() {
-        return String.format("[Token] type: %-20s lexeme: %-20s literal: %-20s", this.tokenType, this.lexeme,
+        return String.format(
+                "[Token] type: %-20s lexeme: %-20s literal: %-20s",
+                this.tokenType,
+                this.lexeme,
                 this.literal);
     }
 }
