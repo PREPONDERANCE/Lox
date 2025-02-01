@@ -1,4 +1,6 @@
-var i = 1;
+// var i = 1;
+
+"abc" + ""
 
 /*
 This is a block comment without nested blocks
