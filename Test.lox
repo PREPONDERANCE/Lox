@@ -1,0 +1,12 @@
+// var i = 1;
+
+"abc" + ""
+
+/*
+This is a block comment without nested blocks
+*/
+
+/*
+* This is a block comment 
+* /* with /* two */ nested blocks */
+*/
