@@ -1,5 +1,6 @@
 package com.craftinginterpreters.lox;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Parser {
@@ -26,23 +27,23 @@ public class Parser {
         return new ParseError();
     }
 
-    public boolean isAtEnd() {
+    private boolean isAtEnd() {
         return peek().tokenType == TokenType.EOF;
     }
 
-    public boolean check(TokenType type) {
+    private boolean check(TokenType type) {
         if (isAtEnd())
             return false;
         return peek().tokenType == type;
     }
 
-    public Token advance() {
+    private Token advance() {
         if (!isAtEnd())
             current++;
         return previous();
     }
 
-    public boolean match(TokenType... types) {
+    private boolean match(TokenType... types) {
         for (TokenType type : types) {
             if (check(type)) {
                 advance();
@@ -52,17 +53,35 @@ public class Parser {
         return false;
     }
 
-    public Token consume(TokenType type, String message) {
+    private Token consume(TokenType type, String message) {
         if (check(type))
             return advance();
         throw error(peek(), message);
     }
 
-    public Expr expression() {
-        return equality();
+    private Expr expression() {
+        return assignment();
     }
 
-    public Expr equality() {
+    private Expr assignment() {
+        Expr expr = equality();
+
+        if (match(TokenType.EQUAL)) {
+            Token equals = previous();
+            Expr value = assignment();
+
+            if (expr instanceof Expr.Variable) {
+                Token name = ((Expr.Variable) expr).name;
+                return new Expr.Assign(name, value);
+            }
+
+            error(equals, "Invalid assignment target.");
+        }
+
+        return expr;
+    }
+
+    private Expr equality() {
         Expr expr = comparison();
 
         while (match(TokenType.EQUAL_EQUAL, TokenType.BANG_EQUAL)) {
@@ -74,7 +93,7 @@ public class Parser {
         return expr;
     }
 
-    public Expr comparison() {
+    private Expr comparison() {
         Expr expr = term();
 
         while (match(TokenType.LESS_EQUAL, TokenType.GREATER_EQUAL, TokenType.LESS, TokenType.GREATER)) {
@@ -86,7 +105,7 @@ public class Parser {
         return expr;
     }
 
-    public Expr term() {
+    private Expr term() {
         Expr expr = factor();
 
         while (match(TokenType.PLUS, TokenType.MINUS)) {
@@ -98,7 +117,7 @@ public class Parser {
         return expr;
     }
 
-    public Expr factor() {
+    private Expr factor() {
         Expr expr = unary();
 
         while (match(TokenType.STAR, TokenType.SLASH)) {
@@ -110,7 +129,7 @@ public class Parser {
         return expr;
     }
 
-    public Expr unary() {
+    private Expr unary() {
         if (match(TokenType.MINUS, TokenType.BANG)) {
             Token operator = previous();
             Expr right = unary();
@@ -120,9 +139,12 @@ public class Parser {
         return primary();
     }
 
-    public Expr primary() {
+    private Expr primary() {
         if (match(TokenType.NUMBER, TokenType.STRING))
             return new Expr.Literal(previous().literal);
+
+        if (match(TokenType.IDENTIFIER))
+            return new Expr.Variable(previous());
 
         if (match(TokenType.TRUE))
             return new Expr.Literal(true);
@@ -164,11 +186,70 @@ public class Parser {
         }
     }
 
-    Expr parse() {
+    private Stmt declaration() {
         try {
-            return expression();
+            if (match(TokenType.VAR))
+                return varDeclaration();
+            return statement();
         } catch (ParseError e) {
+            synchronize();
             return null;
         }
+    }
+
+    private Stmt varDeclaration() {
+        Token name = consume(TokenType.IDENTIFIER, "Expect identifier");
+
+        Expr initializer = null;
+        if (match(TokenType.EQUAL)) {
+            initializer = expression();
+        }
+
+        consume(TokenType.SEMICOLON, "Expect ';' after variable declaration.");
+        return new Stmt.Var(name, initializer);
+    }
+
+    private Stmt statement() {
+        if (match(TokenType.PRINT))
+            return printStatement();
+
+        if (match(TokenType.LEFT_BRACE)) {
+            return new Stmt.Block(block());
+        }
+
+        return expressionStatement();
+    }
+
+    private Stmt printStatement() {
+        Expr expr = expression();
+        consume(TokenType.SEMICOLON, "Expect ; after value");
+        return new Stmt.Print(expr);
+    }
+
+    private Stmt expressionStatement() {
+        Expr expr = expression();
+        consume(TokenType.SEMICOLON, "Expect ; after expression");
+        return new Stmt.Expression(expr);
+    }
+
+    private List<Stmt> block() {
+        List<Stmt> statements = new ArrayList<>();
+
+        while (!check(TokenType.RIGHT_BRACE) && !isAtEnd()) {
+            statements.add(declaration());
+        }
+
+        consume(TokenType.RIGHT_BRACE, "Expect '}' after block.");
+        return statements;
+    }
+
+    List<Stmt> parse() {
+        List<Stmt> stmts = new ArrayList<>();
+
+        while (!isAtEnd()) {
+            stmts.add(declaration());
+        }
+
+        return stmts;
     }
 }

@@ -1,6 +1,32 @@
-// var i = 1;
+/*var i = 1;
 
-"abc" + ""
+print "abc" + "";
+
+print 1 + 2;
+
+print 1 + 2;
+
+print i + 2;
+*/
+
+var a = "global a";
+var b = "global b";
+var c = "global c";
+{
+  var b = "outer b";
+  {
+    var a = "inner a";
+    print a;
+    print b;
+    print c;
+  }
+  print a;
+  print b;
+  print c;
+}
+print a;
+print b;
+print c;
 
 /*
 This is a block comment without nested blocks
