@@ -82,6 +82,20 @@ public class GenerateAst {
                 "Binary   : Expr left, Token operator, Expr right",
                 "Grouping : Expr expression",
                 "Literal  : Object value",
-                "Unary    : Token operator, Expr right"));
+                "Variable : Token name",
+                "Unary    : Token operator, Expr right",
+                "Logical  : Expr left, Token operator, Expr right",
+                "Assign   : Token name, Expr value",
+                "Call     : Expr callee, Token paren, List<Expr> arguments"));
+
+        defineAst(outputDir, "Stmt", Arrays.asList(
+                "Block    : List<Stmt> statements",
+                "Expression : Expr expression",
+                "Print      : Expr expression",
+                "If         : Expr condition, Stmt thenBranch, Stmt elseBranch",
+                "Var        : Token name, Expr initializer",
+                "While      : Expr condition, Stmt body",
+                "Function   : Token name, List<Token> params, List<Stmt> body",
+                "Return     : Token keyword, Expr value"));
     }
 }

@@ -214,6 +214,9 @@ public class Scanner {
             case '*':
                 addToken(TokenType.STAR);
                 break;
+            case ',':
+                addToken(TokenType.COMMA);
+                break;
 
             // One or two characters
             case '!':
