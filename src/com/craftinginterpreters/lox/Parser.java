@@ -232,8 +232,8 @@ public class Parser {
                 case FOR:
                 case RETURN:
                 case VAR:
+                    return;
                 default:
-                    break;
             }
 
             advance();
