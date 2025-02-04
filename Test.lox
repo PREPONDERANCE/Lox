@@ -28,7 +28,7 @@ for (var b = 1; a < 100; b = temp + b) {
 }
 
 fun test(first, second) {
-  var first = "first";
+  // var first = "first";
   print "hello " + first + " " + second;
 }
 
