@@ -1,4 +1,4 @@
-class Node {
+/*class Node {
   init(val, next) {
     this.val = val;
     this.next = next;
@@ -54,3 +54,15 @@ var l = LinkedList();
 l.append("1");
 l.append("2");
 l.traverse();
+*/
+
+
+fun fib(n) {
+  if (n < 2) return n;
+  return fib(n - 1) + fib(n - 2); 
+}
+
+var before = clock();
+print fib(40);
+var after = clock();
+print after - before;
