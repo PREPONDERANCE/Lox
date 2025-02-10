@@ -217,6 +217,9 @@ public class Scanner {
             case ',':
                 addToken(TokenType.COMMA);
                 break;
+            case '.':
+                addToken(TokenType.DOT);
+                break;
 
             // One or two characters
             case '!':

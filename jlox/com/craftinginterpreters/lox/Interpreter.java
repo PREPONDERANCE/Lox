@@ -239,6 +239,48 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return function.call(this, arguments);
     }
 
+    @Override
+    public Object visitGetExpr(Expr.Get expr) {
+        Object value = evaluate(expr.object);
+        if (value instanceof LoxInstance) {
+            return ((LoxInstance) value).get(expr.name);
+        }
+
+        throw new RuntimeError(expr.name, "Only instances have properties.");
+    }
+
+    @Override
+    public Object visitSetExpr(Expr.Set expr) {
+        Object left = evaluate(expr.object);
+
+        if (left instanceof LoxInstance) {
+            Object value = evaluate(expr.value);
+            ((LoxInstance) left).set(expr.name, value);
+            return value;
+        }
+
+        throw new RuntimeError(expr.name, "Only instances have fields.");
+
+    }
+
+    @Override
+    public Object visitThisExpr(Expr.This expr) {
+        return lookupVariable(expr, expr.keyword);
+    }
+
+    @Override
+    public Object visitSuperExpr(Expr.Super expr) {
+        int distance = locals.get(expr);
+        LoxClass superclass = (LoxClass) environment.getAt("super", distance);
+        LoxInstance object = (LoxInstance) environment.getAt("this", distance - 1);
+
+        LoxFunction method = superclass.findMethod(expr.method.lexeme);
+        if (method == null) {
+            throw new RuntimeError(expr.method, "Undefined property '" + expr.method.lexeme + "'.");
+        }
+        return method.bind(object);
+    }
+
     public void executeBlock(List<Stmt> statements, Environment environment) {
         Environment previous = this.environment;
         try {
@@ -303,7 +345,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitFunctionStmt(Stmt.Function stmt) {
-        LoxFunction function = new LoxFunction(stmt, environment);
+        LoxFunction function = new LoxFunction(stmt, environment, false);
         environment.define(stmt.name.lexeme, function);
         return null;
     }
@@ -315,6 +357,40 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             value = evaluate(stmt.value);
         }
         throw new Return(value);
+    }
+
+    @Override
+    public Void visitClassStmt(Stmt.Class stmt) {
+        Object superclass = null;
+        if (stmt.superclass != null) {
+            superclass = evaluate(stmt.superclass);
+            if (!(superclass instanceof LoxClass)) {
+                Lox.error(stmt.superclass.name, "Superclass must be a class.");
+            }
+        }
+
+        environment.define(stmt.name.lexeme, null);
+
+        if (stmt.superclass != null) {
+            // Mirroring the behavior in resolver
+            environment = new Environment(environment);
+            environment.define("super", superclass);
+        }
+
+        Map<String, LoxFunction> methods = new HashMap<>();
+        for (Stmt.Function method : stmt.methods) {
+            methods.put(method.name.lexeme,
+                    new LoxFunction(method, environment, method.name.lexeme.equals("init")));
+        }
+
+        LoxClass loxClass = new LoxClass(stmt.name.lexeme, (LoxClass) superclass, methods);
+        environment.assign(stmt.name, loxClass);
+
+        if (superclass != null) {
+            environment = environment.enclosing;
+        }
+
+        return null;
     }
 
     void interpret(List<Stmt> statements) {

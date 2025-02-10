@@ -1,58 +1,68 @@
-/* var a = "global a";
-var b = "global b";
-var c = "global c";
-{
-  var b = "outer b";
-  {
-    var a = "inner a";
-    print a;
-    print b;
-    print c;
+/*class Node {
+  init(val, next) {
+    this.val = val;
+    this.next = next;
   }
-  print a;
-  print b;
-  print c;
-}
-print a;
-print b;
-print c; */
-
-
-var a = 0;
-var temp;
-
-for (var b = 1; a < 100; b = temp + b) {
-  print a;
-  temp = a;
-  a = b;
 }
 
-fun test(first, second) {
-  // var first = "first";
-  print "hello " + first + " " + second;
-}
 
-test("world", "test");
-
-fun makeCounter() {
-  var i = 0;
-  fun count() {
-    i = i + 1;
-    print i;
+class LinkedList {
+  init() {
+    this.head = Node(-1, nil);
+    this.tail = this.head;
   }
 
-  return count;
+  append(val) {
+    this.tail.next = Node(val, nil);
+    this.tail = this.tail.next;
+  }
+
+  traverse() {
+    var head = this.head;
+    var tail = this.tail;
+
+    if (head.next == nil) {
+      print "Empty list.";
+      return;
+    }
+
+    head = head.next;
+    while (head != tail.next) {
+      print head.val;
+      head = head.next;
+    }
+  }
 }
 
-var counter = makeCounter();
-counter();
-counter();
+class Doughnut {
+  cook() {
+    print "Fry until golden brown.";
+  }
+}
 
-/*
-This is a block comment without nested blocks
+class BostonCream < Doughnut {
+  cook() {
+    super.cook();
+    print "Pipe full of custard and coat with chocolate.";
+  }
+}
+
+BostonCream().cook();
+
+
+var l = LinkedList();
+l.append("1");
+l.append("2");
+l.traverse();
 */
 
-/*
-* This is a block comment 
-* /* with /* two */ nested blocks */
-*/
+
+fun fib(n) {
+  if (n < 2) return n;
+  return fib(n - 1) + fib(n - 2); 
+}
+
+var before = clock();
+print fib(40);
+var after = clock();
+print after - before;
