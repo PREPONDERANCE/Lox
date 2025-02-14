@@ -34,3 +34,4 @@ bin/
 ### Clox ###
 *.o
 main
+**/__pycache__
