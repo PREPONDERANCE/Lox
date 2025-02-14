@@ -1,11 +1,11 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c99 -O2
+CFLAGS = -std=c99 -O3
 LDFLAGS =
 
 # Targets
 TARGET = main
-OBJS = main.o chunk.o memory.o debug.o value.o
+OBJS = main.o chunk.o vm.o debug.o memory.o value.o compiler.o scanner.o
 
 # Default target
 all: $(TARGET)
@@ -19,11 +19,14 @@ $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Dependencies
-main.o: main.c common.h chunk.h memory.h debug.h value.h
-chunk.o: chunk.c chunk.h common.h memory.h value.h
-memory.o: memory.c memory.h common.h
-debug.o: debug.c debug.h chunk.c chunk.h value.h
-value.o: value.c value.h memory.h common.h 
+main.o: common.h chunk.h vm.h debug.h
+chunk.o: chunk.h memory.h common.h value.h
+vm.o: common.h debug.h compiler.h vm.h chunk.h value.h
+debug.o: debug.h value.h chunk.h
+memory.o: memory.h common.h
+value.o: value.h memory.h common.h
+compiler.o: common.h compiler.h scanner.h
+scanner.o: common.h scanner.h
 
 # Clean up build artifacts
 clean:
