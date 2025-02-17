@@ -58,6 +58,14 @@ static char *readFile(const char *path)
 
 static void runFile(const char *path)
 {
+    char *source = readFile(path);
+    InterpretResult res = interpret(source);
+    free(source);
+
+    if (res == INTERPRET_COMPILE_ERROR)
+        exit(65);
+    if (res == INTERPRET_RUNTIME_ERROR)
+        exit(70);
 }
 
 int main(int argc, const char *argv[])

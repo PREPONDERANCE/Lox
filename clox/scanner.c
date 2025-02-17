@@ -43,7 +43,7 @@ static char advance()
     scanner.current++;
     return scanner.current[-1];
     */
-    return *scanner.current--;
+    return *scanner.current++;
 }
 
 static char peek()
@@ -115,7 +115,7 @@ static void skipWhitespace()
         case '/':
             if (peekNext() == '/')
             {
-                while (!isAtEnd() && c != '\n')
+                while (!isAtEnd() && peek() != '\n')
                     advance();
 
                 if (!isAtEnd())

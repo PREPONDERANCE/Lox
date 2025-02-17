@@ -25,7 +25,7 @@ vm.o: common.h debug.h compiler.h vm.h chunk.h value.h
 debug.o: debug.h value.h chunk.h
 memory.o: memory.h common.h
 value.o: value.h memory.h common.h
-compiler.o: common.h compiler.h scanner.h
+compiler.o: common.h compiler.h scanner.h debug.h vm.h
 scanner.o: common.h scanner.h
 
 # Clean up build artifacts
