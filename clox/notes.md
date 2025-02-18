@@ -13,3 +13,5 @@
 6. The instructions our vm contains might not be aligned with the actual instructions. `a <= b` is equivalent to `!(a > b)`; `a != b` equivalent to that of `!(a == b)`.
 
 7. When comparing the values, we cannot use `memcmp` to compare two value structs since the padding bits may differ.
+
+8. Casting a pointer is really about changing the way the pointer looks at the memory. For example, a variable of type `char` named `c` is pointed by `char *` pointer `d`, namely `char* d = &c;`. `d` looks at only one byte of memory. But when we do `* (int *) d`, we are looking at 4 bytes of memory since `int` occupies 4 bytes.
