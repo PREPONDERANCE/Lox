@@ -85,17 +85,20 @@ def find_includes(path: str):
     c_includes = visit(c_file)
     h_includes = visit(header_file) if os.path.exists(header_file) else []
 
-    return "/".join([prefix, f"{name}.o"]).strip("/"), c_includes + h_includes
+    return (
+        "/".join([prefix, f"{name}.o"]).strip("/"),
+        c_includes + h_includes + ["/".join([prefix, f"{name}.c"]).strip("/")],
+    )
 
 
 def generate_makefile(exe: str, exe_target: str):
-    objs, depends = [], {}
+    objs, depends = set(), {}
 
     target, includes = find_includes(exe)
     if target is None:
         return
 
-    objs.append(target)
+    objs.add(target)
     depends.update({target: includes})
 
     visit = set()
@@ -111,7 +114,7 @@ def generate_makefile(exe: str, exe_target: str):
         if target is None:
             continue
 
-        objs.append(target)
+        objs.add(target)
         depends.update({target: sub_includes})
 
         for incl in sub_includes:
