@@ -131,4 +131,4 @@ def generate_makefile(exe: str, exe_target: str):
         file.write(template)
 
 
-generate_makefile("/Users/mac/Personal/crafting-interpreters/lox/clox/main.c", "main")
+generate_makefile(os.path.join(str(ROOT_DIR), "main.c"), "main")

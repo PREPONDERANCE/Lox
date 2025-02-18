@@ -5,7 +5,7 @@ LDFLAGS =
 
 # Targets
 TARGET = main
-OBJS = memory.o compiler.o value.o main.o vm.o scanner.o object.o debug.o chunk.o
+OBJS = chunk.o value.o compiler.o vm.o memory.o object.o main.o debug.o scanner.o
 
 # Default target
 all: $(TARGET)
