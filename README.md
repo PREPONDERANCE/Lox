@@ -11,16 +11,19 @@ Implement Lox language following [craftinginterpreters](https://craftinginterpre
 
 ## Directory Info
 
-```bash
-|__ clox # C implementation
-|
-|__ jlox/com/craftinginterpreters # Java implementation
-|  |__ lox # Actual implementation
-|  |__ tool # GenerateAst helper
-|
-|__ Lox Grammar.md # Entire lox grammar
-|
-|__ Test.lox # Test script for lox language
+```text
+.
+├── Challenges # Challenge problems
+│
+├── clox # C implementation
+│ 
+├── jlox/com/craftinginterpreters # Java implementation
+│   ├── lox # Actual implementation
+│   └── tool # GenerateAst helper
+│ 
+├── Lox Grammar.md # Entire lox grammar
+│ 
+├── Test.lox # Test script for lox language
 ```
 
 ## Guidance
