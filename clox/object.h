@@ -27,6 +27,7 @@ struct ObjString
     Obj obj;
     int length;
     char *chars;
+    uint32_t hash; // Cache the hash value
 };
 
 // We define it as a standalone function because
