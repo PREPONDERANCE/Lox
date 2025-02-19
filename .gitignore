@@ -31,7 +31,10 @@ bin/
 ### IDEA ###
 .idea
 
-### Clox ###
+### jLox ###
+*.class
+
+### cLox ###
 *.o
 main
 **/__pycache__
