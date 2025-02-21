@@ -24,6 +24,7 @@ Components:
     Value *stackTop;
     Obj *objects;  // For garbage collection
     Table strings; // For interning strings
+    Table globals; // For storing global vars
 } VM;
 
 typedef enum
