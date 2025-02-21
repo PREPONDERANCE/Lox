@@ -54,7 +54,6 @@ var l = LinkedList();
 l.append("1");
 l.append("2");
 l.traverse();
-*/
 
 
 fun fib(n) {
@@ -66,3 +65,18 @@ var before = clock();
 print fib(40);
 var after = clock();
 print after - before;
+
+*/
+
+
+print 1 + 2;
+print 3 * 4;
+print "a" + "bc";
+
+var a = "abds";
+
+print a + " hello";
+
+var b = "abd";
+
+a + b = b + a;
