@@ -124,6 +124,30 @@ static void skipWhitespace()
                     advance();
                 }
             }
+            else if (peekNext() == '*')
+            {
+                char c;
+                advance(); // Skip the initial '*'
+
+                do
+                {
+                    advance();
+                    c = peek();
+
+                    if (c == '\n')
+                        scanner.line++;
+
+                    if (c == '*')
+                    {
+                        advance();
+                        if (peek() == '/')
+                        {
+                            advance();
+                            break;
+                        }
+                    }
+                } while (!isAtEnd());
+            }
             else
                 return;
             break;

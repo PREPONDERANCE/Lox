@@ -49,8 +49,6 @@ Implement Lox language following [craftinginterpreters](https://craftinginterpre
 
 - C Version
 
-    > Clox supports only repl currently.
-
     ```bash
     # Enter clox dir
     cd clox
@@ -61,9 +59,18 @@ Implement Lox language following [craftinginterpreters](https://craftinginterpre
     # Compile clox
     make
 
-    # Execute 
+    # Run repl 
     ./main
+
+    # Run file
+    ./main ../Test.lox
 
     # Clear compile output
     make clean
     ```
+
+    > Remember to add `execution` clearance to `main` with `chmod +x main`
+
+## Side Note
+
+1. Support for comments: Both jlox and clox support `//` comments. While jlox supports nested `/**/` comment style (meaning multiple `/**/` pairs inside `/**/`), clox no longer supports it. A nested `/**/` would be considered invalid in clox.

@@ -17,3 +17,24 @@
 9. The `tombstone` mechanism: suppose a hash table as `['a', 'b', 'c']`. All the elements' hash values are the same. If we delete entry 'b' entirely (key set to NULL, value set to NIL), we end up unable to find entry 'c' since the second slot is treated empty. As a result, on deleting entry 'b', we set the key to NULL but value to BOOL(true) (anything other than NIL) to mark this position as tombstone.
 
 10. `intern` means constructing a pool for objects. In Lox, it means any two strings with the same characters are the same objects. Thus, value equality is pointer equality.
+
+11. Defining variables: push the expression operands into the `constants` array along with its operators; treat the variable name as a constant for memory efficiency. When we evaluate the chunk, we first get to see the constants definition. Once we meet the `OP_DEFINE_GLOBAL` directive, it's guaranteed our variable's values sits on the stack top. Same happens for `OP_SET_GLOBAL` and `OP_GET_GLOBAL`.
+
+12. One problem without taking into consideration the precedence when calling `variable` or other expression functions is that we might end up with invalid assignment target. For example, suppose `a * b = a + b`, in the original code without `precedence` parameter, the code flows as the following:
+
+    ```text
+    declaration() -> statement() -> expressionStatement() -> expression();
+
+    # Starting from `expression`, we enter `parseExpression` recursive calls.
+
+    prefixFn()        # 'a', entering `variable`, emitting OP_GET_GLOBAL
+    infixFn()         # '*', entering `binary`
+    parseExpression() # with precedence = '*' + 1
+    prefixFn()        # 'b', entering `variable`
+    variable()        # '=', look ahead found '=', emit OP_SET_GLOBAL
+    parseExpression() # with precedence = '=' + 1
+    ...               # You know the rest
+    ```
+
+    Thus, we need to know at each stage whether `variable` can be used to parse assignment. To achieve this, we don't need the exact precedence context. A boolean value will do just fine.
+
