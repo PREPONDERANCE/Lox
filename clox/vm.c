@@ -115,8 +115,7 @@ static InterpretResult run()
         printf("[OPCODE] ");
         disassembleInstruction(vm.chunk, (int)(vm.ip - vm.chunk->code));
 #endif
-        uint8_t instruction;
-        switch (instruction = READ_BYTE())
+        switch (READ_BYTE())
         {
         case OP_CONSTANT:
         {
@@ -175,6 +174,29 @@ static InterpretResult run()
                 runtimeError("Undefined variable %s.", name->chars);
                 return INTERPRET_RUNTIME_ERROR;
             }
+            break;
+        }
+        case OP_GET_LOCAL:
+        {
+            // Push the value again to the stack seems redundant
+            // but every other operations relies on the peek element.
+            // Suppose we're to print a local var without re-push
+            // the value and that the cur stack size is 1, we end up
+            // losing the original local var. Remember, local vars
+            // are not looked up by name, they live inside the stack.
+
+            uint8_t slot = READ_BYTE();
+            push(vm.stack[slot]);
+            break;
+        }
+        case OP_SET_LOCAL:
+        {
+            // We do not perform pop here since assignment itself is
+            // an expression and every expression ends up with a pop
+            // command.
+
+            uint8_t slot = READ_BYTE();
+            vm.stack[slot] = peek(0);
             break;
         }
         case OP_EQUAL:
