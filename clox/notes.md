@@ -2,7 +2,7 @@
 
 2. A `do..while...` loop in the macro allows for a block of statements without the semicolons.
 
-3. Prefix expression means we can judge what kind to expression this expression belongs to by just looking at the first token, while an infix expression means we can only determine the expression kind after consuming the first token.
+3. Prefix expression means we can judge what kind of expression this expression belongs to by just looking at the first token, while an infix expression means we can only determine the expression kind after consuming the first token.
 
 4. `union` is a lot like `struct` except that the fields in `union` overlap with each other, meaning the memory usage in `union` equals the largest field.
 
@@ -38,3 +38,36 @@
 
     Thus, we need to know at each stage whether `variable` can be used to parse assignment. To achieve this, we don't need the exact precedence context. A boolean value will do just fine.
 
+13. Storing local variables: in jlox, we have a chain of environments(hashmaps) representing each scope, which is slow by nature. Consider a nested block like the following:
+
+    ```
+    var a = 1;
+    {
+        var b = 2;
+        {
+            var c = 3;
+            var d = 4;
+        }
+        var e = 5;
+    }
+    ```
+
+    When we design a language, we not only need to consider how to store a variable, but also take into account how to free it in case of memory leaks.
+
+    The nested structure really simulates the behavior of a stack in that we push variables in the same scope in to the stack and pop them out when we're leaving the stack, in which process, we accomplish both tasks: storing and freeing.
+
+    In `varDeclaration` function, if we hit upon a local variable, we skip the `identifierConstant` (storing the token's lexeme in the `constants` field of the current chunk) and variable declaration (emitting OP_DEFINE_GLOBAL). But we're still emitting the value operations (for example, OP_NIL for empty var declarations and OP_CONSTANT [index] otherwise). Also, we declare the local by adding it to the compiler's `locals` field so that we can keep track of it.
+
+14. An if statement can only allow statement inside its then branch. A declaration right after if would be considered invalid since it's ambiguous what the value of this variable would be in other control branches.
+
+15. In global scope, every statement ends up with an empty stack. One of the questions I had is about global variables. Then I realize global vars are stored in the vm's global hash table while our local variables live on the stack. Thus, when we're retrieving the local variables' names from the compiler's `locals` field, the index of which is exactly the index in vm's stack where it contains the value this local var corresponds to.
+
+{
+    var a = 1;
+    var b = 2;
+    {
+        var a = b;
+        var c = a;
+        var d = d;
+    }
+}
