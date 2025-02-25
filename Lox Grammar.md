@@ -37,7 +37,7 @@ statement   -> printStmt | exprStmt | ifStmt | whileStmt
 exprStmt    -> expression ";";
 printStmt   -> "print" expression ";";
 ifStmt      -> "if" "(" expression ")" statement ("else" statement)?;
-whileStmt   -> "while" "(" expression ")" statment;
+whileStmt   -> "while" "(" expression ")" statement;
 forStmt     -> "for" "(" (varDecl | exprStmt | ";") 
                expression? ";" 
 							 expression? ")" statement;

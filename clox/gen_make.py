@@ -6,8 +6,8 @@ from collections import deque
 ROOT_DIR = Path(os.getcwd())
 TEMPLATE = """# Compiler and flags
 CC = gcc
-CFLAGS = -std=c99 -O3
-LDFLAGS = -Wall
+CFLAGS = -Wall -std=c99 -O3
+LDFLAGS =
 
 # Targets
 TARGET = {target}
