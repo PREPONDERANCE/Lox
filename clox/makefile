@@ -1,11 +1,11 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -std=c99 -O3
-LDFLAGS = -Wall
+CFLAGS = -Wall -std=c99 -O3
+LDFLAGS =
 
 # Targets
 TARGET = main
-OBJS = vm.o value.o debug.o memory.o main.o compiler.o object.o table.o scanner.o chunk.o
+OBJS = memory.o value.o chunk.o compiler.o object.o main.o vm.o debug.o scanner.o table.o
 
 # Default target
 all: $(TARGET)

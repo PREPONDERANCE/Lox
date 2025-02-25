@@ -62,12 +62,6 @@
 
 15. In global scope, every statement ends up with an empty stack. One of the questions I had is about global variables. Then I realize global vars are stored in the vm's global hash table while our local variables live on the stack. Thus, when we're retrieving the local variables' names from the compiler's `locals` field, the index of which is exactly the index in vm's stack where it contains the value this local var corresponds to.
 
-{
-    var a = 1;
-    var b = 2;
-    {
-        var a = b;
-        var c = a;
-        var d = d;
-    }
-}
+16. Conditional branch: JUMP_IF_FALSE, JUMP commands. A classic trick used in conditional branch is that we first emit jump (whether it be JUMP / JUMP_IF_FALSE) command with a 16-bit lookahead (size may vary) and record the position where we emit the jump. After we parse the rest of the source code (like the end of a block),  we calculate the offset (size) between the last recorded position and the current count of bytecode, with which we fill the 16-bit lookahead. One thing to keep in mind is that we need to emit pop command after we emit the jump since the conditional value evaluated at runtime in the stack needs to be cleaned.
+
+17. The for loop is the trickiest part by far.
